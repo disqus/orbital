@@ -15,6 +15,8 @@ how to create a publisher.
 
 You can view the current version of orbital on the web at http://map.labs.disqus.com
 
+.. image:: https://github.com/disqus/orbital/raw/master/example.png
+
 Setup
 =====
 
