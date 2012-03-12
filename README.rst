@@ -18,7 +18,7 @@ You can view the current version of orbital on the web at http://map.labs.disqus
 Setup
 =====
 
-Install reqs
+You can install most requirements via Homebrew and PIP
 
 ::
 
@@ -26,7 +26,7 @@ Install reqs
     pip install -r requirements.txt
 
 
-Install GeoIP data files to /usr/share/GeoIP/
+Install Maxmind's GeoIP city data files to /usr/share/GeoIP/
 
 ::
 
