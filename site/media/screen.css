@@ -1,0 +1,170 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+/* end meyer reset */
+
+
+/************************************/
+/*             TYPOGRAPHY           */
+/************************************/
+
+body, html {
+  background: black;
+  height: 100%;
+  width: 100%;
+  color: white;
+  overflow: hidden;
+}
+#map_container {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+#geo {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background: #000;
+}
+#geo {
+    background-image: -moz-radial-gradient(center -5% 45deg, #badfef, #4b94d0 20%, #2e70b4 30%, #002a77 60%);
+    background-image: -webkit-gradient(radial, 50% -5%, 1, 50% -5%, 1800, from(#badfef), color-stop(20%, #4b94d0), color-stop(30%, #2e70b4), color-stop(60%, #002a77));
+}
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3600px;
+    height: 1800px;
+}
+#mapdata {
+    -moz-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    -ms-transform-origin: 0 0;
+    width:3600px;
+    height:1800px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#mapdata img {
+    width: 3600px;
+    height: 1800px;
+    overflow: hidden;
+    pointer-events: none;
+}
+polygon {
+    fill: #031841;
+    stroke: none;
+}
+
+#messages {
+    list-style: none;
+    margin: 0;
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+    width: 512px;
+    z-index: 20000;
+}
+.overlay {
+    position: absolute;
+    background-color: white;
+    max-width: 500px;
+    padding: 0.5em;
+    margin: 3px 0 0 3px;
+    -moz-border-radius: 0 8px 8px 8px;
+    border-radius: 0 8px 8px 8px;
+    opacity: 0.9;
+    -webkit-box-shadow: 0 1px 8px rgba(0,0,0, .4);
+    overflow: hidden;
+}
+.overlay .avatar {
+    width: 32px;
+    height: 32px;
+    float: left;
+    margin-right: 0.5em;
+}
+.overlay .favicon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    float: left;
+}
+.overlay h2 {
+    overflow: hidden;
+    height: 16px;
+    line-height: 16px;
+    font-size: 14px;
+    color: #1D3142;
+    font-family: "Helvetica Neue", arial;
+    margin-bottom: 4px;
+}
+.overlay .author {
+    float: left;
+    color: #3080C8;
+    display: inline;
+    font-weight: bold;
+}
+.overlay .location {
+    float: right;
+    color: darkred;
+    display: inline;
+    font-weight: bold;
+}
+.overlay .message {
+    color: #000;
+    font-family: "Helvetica Neue", arial;
+    font-size: 11px;
+    line-height: 14px;
+    height: 14px;
+    overflow: hidden;
+}
