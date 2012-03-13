@@ -46,11 +46,8 @@ In another process, send sample data using ``feeder.py``
 
     python feeder.py
 
-Load the page
-
-::
-
-    open site/index.html
+Configure haproxy (or something) to forward websockets on port 80 to 
+port 7000, and setup something to serve site/.
 
 
 Credits
