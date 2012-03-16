@@ -119,56 +119,20 @@ polygon {
     position: absolute;
     max-width: 500px;
     overflow: hidden;
-    -moz-border-radius: 0 8px 8px 8px;
-    border-radius: 0 8px 8px 8px;
     opacity: 0.9;
     text-shadow: 0 0 10px #fff;
     font-size: 0.7em;
-    line-height: 12px;
+    line-height: 10px;
+    height: 12px;
     font-family: "Helvetica Neue", arial;
     overflow: hidden;
 }
 .overlay strong {
     font-weight: bold;
 }
-.overlay .avatar {
-    display: none;
-    width: 32px;
-    height: 32px;
-    float: left;
-    margin-right: 0.5em;
-}
 .overlay .favicon {
     width: 12px;
     height: 12px;
     margin-right: 4px;
     float: left;
-}
-.overlay h2 {
-    overflow: hidden;
-    height: 16px;
-    line-height: 16px;
-    font-size: 14px;
-    color: #1D3142;
-    margin-bottom: 4px;
-}
-.overlay .author {
-    float: left;
-    color: #3080C8;
-    display: inline;
-    font-weight: bold;
-}
-.overlay .location {
-    float: right;
-    color: darkred;
-    display: inline;
-    font-weight: bold;
-}
-.overlay .message {
-    color: #000;
-    font-family: "Helvetica Neue", arial;
-    font-size: 11px;
-    line-height: 14px;
-    height: 14px;
-    overflow: hidden;
 }
