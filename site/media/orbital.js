@@ -56,10 +56,8 @@
         var post = data.post;
 
         lastMessage = $('<div class="overlay">' +
-          '<img class="avatar" src="' + post.avatar_url + '"/>' +
           '<img src="http://disqus.com/api/forums/favicons/' + post.forum_id + '.jpg" class="favicon"/>' +
-          '<h2 class="title">' + post.thread_title + '</h2>' +
-          '<p class="message"><strong class="author">' + post.author_name + '</strong> <strong class="location">' + data.loc + '</strong></p>' +
+          '<strong>' + post.thread_title + '</strong>' +
           '</div>').hide().appendTo(element).css({
             'left': x,
             'top': y
@@ -70,7 +68,7 @@
                 lastMessage.remove();
                 lastMessage = null;
             });
-        }, 3000);
+        }, 1500);
     };
 
     orbital.addData = function(data) {
@@ -80,7 +78,7 @@
         // render and animate our point
         var point = jc.circle(x, y,
             5, "rgba(255, 255, 255, 1)", 1)
-          .animate({radius:1, opacity:0.4}, 700, function(){
+          .animate({radius:1, opacity:0.4}, 300, function(){
               point.del();
               activeLayer.fillStyle = "rgba(255, 255, 255, 0.2)";
               activeLayer.beginPath();

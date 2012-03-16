@@ -117,25 +117,30 @@ polygon {
 }
 .overlay {
     position: absolute;
-    background-color: white;
     max-width: 500px;
-    padding: 0.5em;
-    margin: 3px 0 0 3px;
+    overflow: hidden;
     -moz-border-radius: 0 8px 8px 8px;
     border-radius: 0 8px 8px 8px;
     opacity: 0.9;
-    -webkit-box-shadow: 0 1px 8px rgba(0,0,0, .4);
+    text-shadow: 0 0 10px #fff;
+    font-size: 0.7em;
+    line-height: 12px;
+    font-family: "Helvetica Neue", arial;
     overflow: hidden;
 }
+.overlay strong {
+    font-weight: bold;
+}
 .overlay .avatar {
+    display: none;
     width: 32px;
     height: 32px;
     float: left;
     margin-right: 0.5em;
 }
 .overlay .favicon {
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
     margin-right: 4px;
     float: left;
 }
@@ -145,7 +150,6 @@ polygon {
     line-height: 16px;
     font-size: 14px;
     color: #1D3142;
-    font-family: "Helvetica Neue", arial;
     margin-bottom: 4px;
 }
 .overlay .author {

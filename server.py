@@ -6,6 +6,9 @@ orbital server
 :license: Apache License 2.0, see LICENSE for more details.
 """
 
+import mimetypes
+import os.path
+
 from multiprocessing import Process
 from gevent import pywsgi, monkey
 from geventwebsocket.handler import WebSocketHandler
@@ -13,6 +16,8 @@ from geventwebsocket.handler import WebSocketHandler
 from gevent_zeromq import zmq
 
 monkey.patch_all()
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), 'site'))
 
 
 def run_publisher():
@@ -36,7 +41,7 @@ def run_publisher():
 
 
 def run_websockets():
-    def handle(ws, environ):
+    def handle_ws(ws, environ):
         subscriber = context.socket(zmq.SUB)
         subscriber.connect("tcp://127.0.0.1:5555")
         subscriber.setsockopt(zmq.SUBSCRIBE, "")
@@ -52,15 +57,25 @@ def run_websockets():
             subscriber.close()
             print "[%s] Client disconnected" % environ['REMOTE_ADDR']
 
-    def app(environ, start_response):
-        if environ['PATH_INFO'] == '/test':
-            start_response("200 OK", [('Content-Type', 'text/plain')])
-            return []
-        elif environ['PATH_INFO'] == '/' and 'wsgi.websocket' in environ:
-            return handle(environ['wsgi.websocket'], environ)
-        else:
+    def handle(environ, start_response):
+        path_info = environ['PATH_INFO']
+        if path_info.endswith('/'):
+            path_info += 'index.html'
+        path = os.path.abspath(os.path.join(ROOT, path_info[1:]))
+
+        if not path.startswith(ROOT) or not os.path.exists(path):
             start_response("404 Not Found", [])
-        return []
+            return []
+
+        content_type = mimetypes.guess_type(path)[0]
+
+        start_response("200 OK", [('Content-Type', content_type)])
+        return [open(path, 'r').read()]
+
+    def app(environ, start_response):
+        if environ['PATH_INFO'] == '/' and 'wsgi.websocket' in environ:
+            return handle_ws(environ['wsgi.websocket'], environ)
+        return handle(environ, start_response)
 
     context = zmq.Context()
 

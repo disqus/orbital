@@ -14,14 +14,17 @@ import random
 
 from gevent_zeromq import zmq
 
-from data_poller import anonymize
-
 monkey.patch_all()
 
-
 GEOIP_PATH = '/usr/share/GeoIP/GeoIPCity.dat'
-
 SERVER = 'tcp://0.0.0.0:5556'
+
+# list of country codes that should be anonymized
+COUNTRY_BLACKLIST = set([
+    'IR',
+    'SA',
+    'DE',
+])
 
 geocoder = pygeoip.GeoIP(GEOIP_PATH, pygeoip.MEMORY_CACHE)
 
@@ -32,6 +35,19 @@ def geocode_addr(addr):
 
 def generate_ip():
     return '%s.%s.%s.%s' % (random.randint(1, 255), random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+
+
+def anonymize(post, country_code):
+    result = {
+        'thread_title': post['thread']['title'],
+        'forum_id': post['forum'],
+        # 'author_name': post['author']['name'],
+        # 'avatar_url': post['author']['avatar']['cache'],
+    }
+    # if country_code in COUNTRY_BLACKLIST:
+    #     result['avatar_url'] = 'http://mediacdn.disqus.com/1331069161/images/noavatar32.png'
+    #     result['author_name'] = 'Anonymous'
+    return result
 
 
 messages = [
