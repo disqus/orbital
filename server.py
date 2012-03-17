@@ -42,8 +42,6 @@ def run_publisher():
 
 def run_websockets():
     def handle_ws(ws, environ):
-        context = zmq.Context()
-
         subscriber = context.socket(zmq.SUB)
         subscriber.connect("tcp://127.0.0.1:5555")
         subscriber.setsockopt(zmq.SUBSCRIBE, "")
