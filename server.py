@@ -6,6 +6,7 @@ orbital server
 :license: Apache License 2.0, see LICENSE for more details.
 """
 
+import gevent
 import mimetypes
 import os.path
 
@@ -36,12 +37,15 @@ def run_publisher():
         message = server.recv()
 
         publisher.send(message)
+        gevent.sleep(0.1)
 
     publisher.close()
 
 
 def run_websockets():
     def handle_ws(ws, environ):
+        context = zmq.Context()
+
         subscriber = context.socket(zmq.SUB)
         subscriber.connect("tcp://127.0.0.1:5555")
         subscriber.setsockopt(zmq.SUBSCRIBE, "")
