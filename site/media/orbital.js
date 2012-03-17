@@ -2,7 +2,7 @@
     orbital = this;
 
     var host = 'ws://' + window.location.host + '/';
-    var maxLayers = 60;
+    var maxLayers = 30;
     var dateKeyFunc = function(){
         return new Date().getMinutes();
     };
