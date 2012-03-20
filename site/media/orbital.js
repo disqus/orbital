@@ -89,12 +89,18 @@
         this.addMessage(data, x, y);
     };
 
-    orbital.connect = function(){
+    orbital.connect = function(params){
+        if (params === undefined || params === '') {
+            params = '*';
+        }
         orbital.socket = new WebSocket(host);
         orbital.socket.onclose = function(e){
             setTimeout(function(){
-                orbital.connect();
+                orbital.connect(params);
             }, 3000);
+        };
+        orbital.socket.onopen = function(){
+            this.send('SUB ' + params);
         };
         orbital.socket.onmessage = function(msg){
             var data = JSON.parse(msg.data);
@@ -143,7 +149,7 @@
         setTimeout(orbital.watchActiveLayer, 3000);
     };
 
-    orbital.init = function(el) {
+    orbital.init = function(el, params) {
         element = el;
 
         sizePageElements();
@@ -152,6 +158,6 @@
 
         orbital.watchActiveLayer();
 
-        orbital.connect();
+        orbital.connect(params);
     };
 })();

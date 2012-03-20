@@ -6,6 +6,7 @@ orbital server
 :license: Apache License 2.0, see LICENSE for more details.
 """
 
+import json
 import gevent
 import mimetypes
 import os.path
@@ -52,9 +53,46 @@ def run_websockets():
 
         print "[%s] Client connected" % environ['REMOTE_ADDR']
 
+        params = None
+
         try:
             while True:
+                if params is None:
+                    print '[%s] Waiting on subscription params' % environ['REMOTE_ADDR']
+                    m = ws.receive()
+                    if not m:
+                        return
+                    cmd, args = m.split(' ', 1)
+                    args = args.strip()
+                    if args == '':
+                        args = '*'
+
+                    if cmd != 'SUB':
+                        return
+
+                    if args == '*':
+                        params = {}
+                    else:
+                        params = dict(a.split('=') for a in args.split('&'))
+
+                        for key, value in params.iteritems():
+                            params[key] = map(lambda x: x.strip().lower(), value.split(' OR '))
+
+                    print "[%s] Subscription established %s" % (environ['REMOTE_ADDR'], params)
+
                 message = subscriber.recv()
+
+                try:
+                    data = json.loads(message)['post']
+                except KeyError:
+                    print 'Invalid data', message
+                    continue
+
+                if 'forum' in params and data['forum_id'] not in params['forum']:
+                    continue
+
+                if 'query' in params and data['thread_title'] not in params['query']:
+                    continue
 
                 ws.send(message)
         finally:

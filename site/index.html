@@ -27,7 +27,13 @@
     <script src="media/orbital.js"></script>
     <script src="config.js"></script>
     <script>
-      orbital.init($("#map_container"));
+      var query = window.location.hash;
+      if (query.slice(0, 2) == '#/') {
+        query = query.slice(2);
+      } else {
+        query = '';
+      }
+      orbital.init($("#map_container"), query);
     </script>
   </body>
 </html>
