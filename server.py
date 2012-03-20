@@ -39,7 +39,6 @@ def run_publisher():
         message = server.recv()
 
         publisher.send(message)
-        gevent.sleep(0.1)
 
     publisher.close()
 
