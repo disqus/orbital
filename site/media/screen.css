@@ -186,6 +186,19 @@ polygon {
     color: inherit;
     text-decoration: none;
 }
+#footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    text-align: right;
+    color: #fff;
+    font-size: 0.7em;
+}
+#footer a {
+    color: #fff;
+}
 #options {
     position: absolute;
     margin: 40px 3px;
