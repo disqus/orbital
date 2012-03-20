@@ -70,7 +70,7 @@ class WebsocketPublisher(object):
             if params.get('forum') and data['forum_id'] not in params['forum']:
                 continue
 
-            if params.get('query') and not any(data['thread_title'].startswith(t) for t in params['query']):
+            if params.get('query') and not any(t in data['thread_title'].lower() for t in params['query']):
                 continue
 
             ws.send(message)
