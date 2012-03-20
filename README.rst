@@ -24,7 +24,7 @@ You can install most requirements via Homebrew and PIP
 
 ::
 
-    brew install geoip libevent
+    brew install geoip libevent zeromq
     pip install -r requirements.txt
 
 
@@ -46,7 +46,7 @@ In another process, send sample data using ``feeder.py``
 
     python feeder.py
 
-Configure haproxy (or something) to forward websockets on port 80 to 
+Configure haproxy (or something) to forward websockets on port 80 to
 port 7000, and setup something to serve site/.
 
 
