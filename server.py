@@ -13,7 +13,7 @@ import os.path
 import uuid
 
 from multiprocessing import Process
-from gevent import pywsgi, monkey, Greenlet
+from gevent import pywsgi, monkey
 from geventwebsocket.handler import WebSocketHandler
 
 from gevent_zeromq import zmq
