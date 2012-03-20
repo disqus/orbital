@@ -10,9 +10,10 @@ import json
 import gevent
 import mimetypes
 import os.path
+import uuid
 
 from multiprocessing import Process
-from gevent import pywsgi, monkey
+from gevent import pywsgi, monkey, Greenlet
 from geventwebsocket.handler import WebSocketHandler
 
 from gevent_zeromq import zmq
@@ -43,7 +44,41 @@ def run_publisher():
     publisher.close()
 
 
+class WebsocketPublisher(object):
+    def __init__(self, subscriber, ws, params=None):
+        self.subscriber = subscriber
+        self.ws = ws
+        self.params = params
+
+    def run(self):
+        ws = self.ws
+        subscriber = self.subscriber
+        while True:
+            params = self.params
+
+            message = subscriber.recv()
+
+            if params is None:
+                continue
+
+            try:
+                data = json.loads(message)['post']
+            except KeyError:
+                print 'Invalid data', message
+                continue
+
+            if params.get('forum') and data['forum_id'] not in params['forum']:
+                continue
+
+            if params.get('query') and not any(data['thread_title'].startswith(t) for t in params['query']):
+                continue
+
+            ws.send(message)
+
+
 def run_websockets():
+    clients = set()
+
     def handle_ws(ws, environ):
         context = zmq.Context()
 
@@ -51,24 +86,35 @@ def run_websockets():
         subscriber.connect("tcp://127.0.0.1:5555")
         subscriber.setsockopt(zmq.SUBSCRIBE, "")
 
-        print "[%s] Client connected" % environ['REMOTE_ADDR']
+        client_id = uuid.uuid4().hex
+        clients.add(client_id)
+        publisher = WebsocketPublisher(subscriber, ws)
+        publisher_thread = gevent.spawn(publisher.run)
 
-        params = None
+        print "[%s] Client connected %r (%s clients total)" % (client_id, environ['REMOTE_ADDR'], len(clients), )
 
         try:
             while True:
-                if params is None:
-                    print '[%s] Waiting on subscription params' % environ['REMOTE_ADDR']
-                    m = ws.receive()
-                    if not m:
-                        return
-                    cmd, args = m.split(' ', 1)
+                message = ws.receive()
+                if not message:
+                    return
+
+                message_bits = message.split(' ', 1)
+
+                cmd = message_bits[0]
+
+                if cmd == 'OK':
+                    continue
+
+                if cmd == 'SUB':
+                    if len(message_bits) == 2:
+                        args = message_bits[-1]
+                    else:
+                        args = ''
+
                     args = args.strip()
                     if args == '':
                         args = '*'
-
-                    if cmd != 'SUB':
-                        return
 
                     if args == '*':
                         params = {}
@@ -76,28 +122,19 @@ def run_websockets():
                         params = dict(a.split('=') for a in args.split('&'))
 
                         for key, value in params.iteritems():
-                            params[key] = map(lambda x: x.strip().lower(), value.split(' OR '))
+                            params[key] = filter(bool, map(lambda x: x.strip().lower(), value.split(' OR ')))
 
-                    print "[%s] Subscription established %s" % (environ['REMOTE_ADDR'], params)
+                    publisher.params = params
 
-                message = subscriber.recv()
+                    print "[%s] Subscription established %s" % (client_id, params)
 
-                try:
-                    data = json.loads(message)['post']
-                except KeyError:
-                    print 'Invalid data', message
-                    continue
-
-                if 'forum' in params and data['forum_id'] not in params['forum']:
-                    continue
-
-                if 'query' in params and data['thread_title'] not in params['query']:
-                    continue
-
-                ws.send(message)
         finally:
+            publisher_thread.kill()
             subscriber.close()
-            print "[%s] Client disconnected" % environ['REMOTE_ADDR']
+
+            clients.remove(client_id)
+
+            print "[%s] Client disconnected" % client_id
 
     def handle(environ, start_response):
         path_info = environ['PATH_INFO']

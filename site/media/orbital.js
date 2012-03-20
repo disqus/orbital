@@ -90,22 +90,43 @@
     };
 
     orbital.connect = function(params){
+        // if params are empty, set them to * (all results)
         if (params === undefined || params === '') {
             params = '*';
         }
+
+        orbital.params = params;
+
+        // close the open socket first
+        orbital.disconnect();
+
+        console.log('Opening websocket connection');
         orbital.socket = new WebSocket(host);
         orbital.socket.onclose = function(e){
             setTimeout(function(){
-                orbital.connect(params);
+                orbital.connect(orbital.params);
             }, 3000);
         };
         orbital.socket.onopen = function(){
-            this.send('SUB ' + params);
+            this.send('SUB ' + orbital.params);
         };
         orbital.socket.onmessage = function(msg){
             var data = JSON.parse(msg.data);
             orbital.addData(data);
+            this.send('OK');
         };
+
+    };
+
+    orbital.disconnect = function(){
+        if (orbital.socket) {
+            console.log('Closing websocket connection');
+            orbital.socket.onclose = function(){
+                console.log('Socket closed');
+            };
+            orbital.socket.close();
+            orbital.socket = null;
+        }
     };
 
     orbital.createLayer = function(dateKey){
@@ -149,6 +170,21 @@
         setTimeout(orbital.watchActiveLayer, 3000);
     };
 
+    orbital.initOptions = function() {
+        var $options = $('#options');
+        $('.close', $options).click(function(){
+            $('#options').hide();
+        });
+        $('#header .options').click(function(){
+            $options.show();
+        });
+        $('form', $options).submit(function(){
+            orbital.connect($(this).serialize());
+
+            return false;
+        });
+    };
+
     orbital.init = function(el, params) {
         element = el;
 
@@ -157,6 +193,12 @@
         jc.start('pings', true);
 
         orbital.watchActiveLayer();
+
+        orbital.initOptions();
+
+        window.onbeforeunload = function() {
+            orbital.disconnect();
+        };
 
         orbital.connect(params);
     };

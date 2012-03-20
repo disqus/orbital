@@ -16,10 +16,28 @@
         </div>
       </section>
       <section id="header">
-        <img src="media/logo_dark.png" id="logo">
+        <div id="logo">
+          <img src="media/logo_dark.png">
+        </div>
         <div id="copy">
           <strong>Conversations</strong> around the world on the <strong><a href="http://disqus.com/about">DISQUS network</a></strong>
+          | <a href="javascript:void(0)" class="options">Map Options</a>
         </div>
+      </section>
+      <section id="options">
+        <a href="javascript:void(0)" class="close">Close</a>
+        <div class="title">Map Options</div>
+        <form method="POST">
+          <fieldset class="body">
+            <div class="field">
+              <label>Limit data to forum:</label>
+              <input type="text" name="forum" placeholder="e.g. cnn">
+            </div>
+            <div class="submit">
+              <button type="submit">Apply</button>
+            </div>
+          </fieldset>
+        </form>
       </section>
     </div>
     <script src="media/jCanvaScript.1.5.14.min.js"></script>
