@@ -2,6 +2,16 @@
 orbital server
 ~~~~~~~~~~~~~~
 
+The server consists of two subprocesses, and several greenlets.
+
+The first process runs the actual web server (which includes a websocket
+server). It does this via two greenlets, one which handles the actual web
+requests, and the other which handles publishing messages to the websocket
+client.
+
+The second process runs the zeromq subscriber, which listens for messages
+and republishes them to all websocket server clients.
+
 :copyright: (c) 2012 DISQUS.
 :license: Apache License 2.0, see LICENSE for more details.
 """
@@ -23,27 +33,15 @@ monkey.patch_all()
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), 'site'))
 
 
-def run_publisher():
-    """
-    Pulls data from postevent and publishes to local subscribers
-    """
-    context = zmq.Context()
-
-    publisher = context.socket(zmq.PUB)
-    publisher.bind('tcp://127.0.0.1:5555')
-
-    server = context.socket(zmq.PULL)
-    server.bind('tcp://127.0.0.1:5556')
-
-    while True:
-        message = server.recv()
-
-        publisher.send(message)
-
-    publisher.close()
-
-
 class WebsocketPublisher(object):
+    """
+    Represents the websocket publisher, which receives messages
+    from the feeder, and sends them to the websocket client.
+
+    It's important that this is in a separate greenlet from the receive
+    call as we'll block otherwise, and either not be able to send messages
+    or not being able to receive future commands.
+    """
     def __init__(self, subscriber, ws, params=None):
         self.subscriber = subscriber
         self.ws = ws
@@ -75,7 +73,31 @@ class WebsocketPublisher(object):
             ws.send(message)
 
 
+def run_publisher():
+    """
+    Pulls data from postevent and publishes to local subscribers
+    """
+    context = zmq.Context()
+
+    publisher = context.socket(zmq.PUB)
+    publisher.bind('tcp://127.0.0.1:5555')
+
+    server = context.socket(zmq.PULL)
+    server.bind('tcp://127.0.0.1:5556')
+
+    while True:
+        message = server.recv()
+
+        publisher.send(message)
+
+    publisher.close()
+
+
 def run_websockets():
+    """
+    Runs the websocket server (which also handles normal HTTP connections for serving
+    the static assets).
+    """
     clients = set()
 
     def handle_ws(ws, environ):
