@@ -109,7 +109,6 @@
         // close the open socket first
         orbital.disconnect();
 
-        console.log('Opening websocket connection');
         orbital.socket = new WebSocket(host);
         orbital.socket.onclose = function(e){
             setTimeout(function(){
@@ -129,10 +128,7 @@
 
     orbital.disconnect = function(){
         if (orbital.socket) {
-            console.log('Closing websocket connection');
-            orbital.socket.onclose = function(){
-                console.log('Socket closed');
-            };
+            orbital.socket.onclose = function(){};
             orbital.socket.close();
             orbital.socket = null;
         }
