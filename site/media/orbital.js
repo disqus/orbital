@@ -86,7 +86,9 @@
               activeLayer.fill();
           });
 
-        this.addMessage(data, x, y);
+        if (data.post) {
+            this.addMessage(data, x, y);
+        }
     };
 
     orbital.connect = function(params){
