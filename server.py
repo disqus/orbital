@@ -22,7 +22,6 @@ import mimetypes
 import os.path
 import uuid
 
-from multiprocessing import Process
 from gevent import pywsgi, monkey
 from geventwebsocket.handler import WebSocketHandler
 
@@ -77,6 +76,8 @@ def run_publisher():
     """
     Pulls data from postevent and publishes to local subscribers
     """
+    print "Publisher running, waiting for data.."
+
     context = zmq.Context()
 
     publisher = context.socket(zmq.PUB)
@@ -182,7 +183,12 @@ def run_websockets():
     server = context.socket(zmq.PULL)
     server.connect('tcp://127.0.0.1:5556')
 
-    server = pywsgi.WSGIServer(('0.0.0.0', 7000), app,
+    host = '0.0.0.0'
+    port = 7000
+
+    print "Listening for connections on %s:%s" % (host, port)
+
+    server = pywsgi.WSGIServer((host, port), app,
         handler_class=WebSocketHandler)
 
     server.serve_forever()
@@ -190,12 +196,12 @@ def run_websockets():
 
 def main():
     procs = [
-        Process(target=run_publisher),
-        Process(target=run_websockets),
+        gevent.spawn(run_publisher),
+        gevent.spawn(run_websockets),
     ]
 
     for p in procs:
-        p.start()
+        p.join()
 
 if __name__ == "__main__":
     main()
