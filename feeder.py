@@ -32,6 +32,7 @@ def generate_ip():
 
 def anonymize(post, country_code):
     return {
+        'link': post['thread']['link'],
         'title': post['thread']['title'],
         'icon': 'http://disqus.com/api/forums/favicons/%s.jpg' % (post['forum'],)
     }

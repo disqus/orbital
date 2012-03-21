@@ -23,9 +23,9 @@ import os.path
 import uuid
 
 from gevent import pywsgi, monkey
-from geventwebsocket.handler import WebSocketHandler
-
 from gevent_zeromq import zmq
+from geventwebsocket.handler import WebSocketHandler
+from urlparse import urlparse
 
 monkey.patch_all()
 
@@ -63,10 +63,15 @@ class WebsocketPublisher(object):
                 print 'Invalid data', message
                 continue
 
-            if params.get('forum') and data['forum_id'] not in params['forum']:
-                continue
+            if params.get('domain'):
+                if not data.get('link'):
+                    continue
 
-            if params.get('query') and not any(t in data['thread_title'].lower() for t in params['query']):
+                domain = urlparse(data['link']).hostname.split('.')
+                if not any(domain[-len(d):] == d for d in params['domain']):
+                    continue
+
+            if params.get('query') and not any(t in data['title'].lower() for t in params['query']):
                 continue
 
             ws.send(message)
@@ -145,6 +150,9 @@ def run_websockets():
 
                         for key, value in params.iteritems():
                             params[key] = filter(bool, map(lambda x: x.strip().lower(), value.split(' OR ')))
+
+                            if key == 'domain':
+                                params[key] = [d.split('.') for d in params[key]]
 
                     publisher.params = params
 
