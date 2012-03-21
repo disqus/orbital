@@ -54,10 +54,17 @@
         }
 
         var post = data.post;
+        var icon;
+
+        if (post.icon) {
+            icon = '<img src="' + post.icon + '" class="favicon"/>';
+        } else {
+            icon = '';
+        }
 
         lastMessage = $('<div class="overlay">' +
-          '<img src="http://disqus.com/api/forums/favicons/' + post.forum_id + '.jpg" class="favicon"/>' +
-          '<strong>' + post.thread_title + '</strong>' +
+          icon +
+          '<strong>' + post.title + '</strong>' +
           '</div>').hide().appendTo(element).css({
             'left': x,
             'top': y
