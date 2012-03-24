@@ -63,7 +63,7 @@ body, html {
     font-family: "Helvetica Neue", arial;
     font-size: 13px;
     background-image: -moz-radial-gradient(center -5% 45deg, #badfef, #4b94d0 20%, #2e70b4 30%, #002a77 60%);
-    background-image: -webkit-gradient(radial, 50% -5%, 1, 50% -5%, 1800, from(#4b94d0), color-stop(20%, #4b94d0), color-stop(30%, #2e70b4), color-stop(60%, #002a77));
+    background-image: -webkit-gradient(radial, 50% -5%, 1, 50% -5%, 1800, from(#badfef), color-stop(20%, #4b94d0), color-stop(30%, #2e70b4), color-stop(60%, #002a77));
 }
 #map_container {
     overflow: hidden;
@@ -75,31 +75,33 @@ body, html {
     position: absolute;
     top: 0;
     width: 100%;
+    background: #000;
 }
 #geo {
+    background-image: -moz-radial-gradient(center -5% 45deg, #badfef, #4b94d0 20%, #2e70b4 30%, #002a77 60%);
+    background-image: -webkit-gradient(radial, 50% -5%, 1, 50% -5%, 1800, from(#badfef), color-stop(20%, #4b94d0), color-stop(30%, #2e70b4), color-stop(60%, #002a77));
 }
 canvas {
     position: absolute;
     top: 0;
     left: 0;
-    width: 2880px;
-    height: 1440px;
+    width: 3600px;
+    height: 1800px;
 }
 #mapdata {
     -moz-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
     -o-transform-origin: 0 0;
     -ms-transform-origin: 0 0;
-    width: 2880px;
-    height: 1440px;
+    width:3600px;
+    height:1800px;
     position: absolute;
     top: 0;
     left: 0;
 }
 #mapdata img {
-    width: 100%;
-    height: 100%;
-    display: block;
+    width: 3600px;
+    height: 1800px;
     overflow: hidden;
     pointer-events: none;
 }
