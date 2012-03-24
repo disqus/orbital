@@ -124,7 +124,7 @@ polygon {
     max-width: 500px;
     overflow: hidden;
     opacity: 0.9;
-    text-shadow: 0 0 10px #fff;
+    text-shadow: 0 0 20px #000;
     font-size: 0.7em;
     line-height: 10px;
     height: 12px;
