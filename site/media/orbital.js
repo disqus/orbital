@@ -11,8 +11,8 @@
     var layers = [];
     var activeLayer;
     var adjustOffset = 0;
-    var targetHeight = 1800;
-    var targetWidth = 3600;
+    var targetWidth = 2880;
+    var targetHeight = 1440;
     var setHeight;
     var setWidth;
     var currentData = [];
@@ -79,8 +79,8 @@
     };
 
     orbital.addData = function(data) {
-        var x = ~~((parseFloat(data.lng) + 180) * 10) * orbital.scale,
-            y = ~~((-parseFloat(data.lat) + 90) * 10) * orbital.scale;
+        var x = ~~((parseFloat(data.lng) + 180) * 8) * orbital.scale,
+            y = ~~((-parseFloat(data.lat) + 90) * 8) * orbital.scale;
 
         // render and animate our point
         var point = jc.circle(x, y,
