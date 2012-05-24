@@ -20,12 +20,25 @@ import json
 import gevent
 import mimetypes
 import os.path
+import traceback
 import uuid
 
 from gevent import pywsgi, monkey
 from gevent_zeromq import zmq
 from geventwebsocket.handler import WebSocketHandler
 from urlparse import urlparse
+
+try:
+    from raven.base import Client
+    raven = Client(os.environ['SENTRY_DSN'])
+except:
+    raven = None
+
+
+def log_exception(self, e):
+    if raven:
+        raven.captureException()
+    traceback.print_exc()
 
 monkey.patch_all()
 
@@ -59,7 +72,8 @@ class WebsocketPublisher(object):
 
             try:
                 data = json.loads(message)['post']
-            except KeyError:
+            except KeyError, e:
+                log_exception(e)
                 print 'Invalid data', message
                 continue
 
@@ -92,9 +106,13 @@ def run_publisher():
     server.bind('tcp://127.0.0.1:5556')
 
     while True:
-        message = server.recv()
-
-        publisher.send(message)
+        gevent.sleep(0)
+        try:
+            message = server.recv()
+            publisher.send(message)
+        except Exception, e:
+            log_exception(e)
+            raise
 
     publisher.close()
 
@@ -122,6 +140,7 @@ def run_websockets():
 
         try:
             while True:
+                gevent.sleep(0)
                 message = ws.receive()
                 if not message:
                     return
@@ -182,9 +201,13 @@ def run_websockets():
         return [open(path, 'r').read()]
 
     def app(environ, start_response):
-        if environ['PATH_INFO'] == '/' and 'wsgi.websocket' in environ:
-            return handle_ws(environ['wsgi.websocket'], environ)
-        return handle(environ, start_response)
+        try:
+            if environ['PATH_INFO'] == '/' and 'wsgi.websocket' in environ:
+                return handle_ws(environ['wsgi.websocket'], environ)
+            return handle(environ, start_response)
+        except Exception, e:
+            log_exception(e)
+            raise
 
     context = zmq.Context()
 
