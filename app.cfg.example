@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+# Your DISQUS API Secret key (Consumer Secret)
+# find this at https://disqus.com/api/applications/
+API_SECRET = ''
+
+# Your DISQUS API Access Token
+# find this at https://disqus.com/api/applications/
+ACCESS_TOKEN = ''
+
+# The path to your (non-free) GeoIP city data file
+# purchase this from http://www.maxmind.com/app/city
+GEOIP_PATH = '/usr/share/GeoIP/GeoIPCity.dat'
+
+# The zeromq socket for the Orbital publisher server
+SERVER = 'tcp://127.0.0.1:5556'
