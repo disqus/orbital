@@ -28,7 +28,7 @@ You can install most requirements via Homebrew and PIP
     pip install -r requirements.txt
 
 
-Install Maxmind's GeoIP city data files to /usr/share/GeoIP/
+Install `Maxmind's GeoIP city data <http://www.maxmind.com/app/city>`_ files to /usr/share/GeoIP/
 
 ::
 
