@@ -76,6 +76,9 @@ Finally, run the feeder::
 
     python disqus_feeder.py
 
+.. note:: You'll see a lot of data when you first run it, as it gets the "last 100 posts" to start the
+          stream.
+
 Streaming Example Data
 ----------------------
 
