@@ -89,7 +89,7 @@ def geocode_addr(addr):
         return {}
 
 
-def anonymize(post, country_code):
+def anonymize(post):
     return {
         'link': post['thread']['link'],
         'title': post['thread']['title'],
@@ -104,28 +104,16 @@ def main():
     pub.connect(config['SERVER'])
 
     def handle_post(post):
-        if 'ipAddress' not in post:
-            print 'Post %r does not have ipAddress field' % post['id']
-            return
-
-        result = geocode_addr(post['ipAddress'])
-        if not result:
-            print 'Could not geocode post %r with ipAddress=%r' % (post['id'], post['ipAddress'])
+        if 'approxyLoc' not in post:
+            print 'Post %r does not have approxyLoc field' % post['id']
             return
 
         print "New post", post['id']
 
-        if result['metro_code']:
-            loc = result['metro_code']
-        elif result['city']:
-            loc = '%s, %s' % (result['city'].decode('latin1'), result['country_name'].decode('latin1'))
-        else:
-            loc = result['country_name']
         data = {
-            'post': anonymize(post, result['country_code']),
-            'loc': loc,
-            'lat': result['latitude'],
-            'lng': result['longitude'],
+            'post': anonymize(post),
+            'lat': post['approxLoc']['lat'],
+            'lng': post['approxLoc']['lng'],
         }
         try:
             queue.put_nowait(data)

@@ -30,7 +30,7 @@ def generate_ip():
     return '%s.%s.%s.%s' % (random.randint(1, 255), random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
 
-def anonymize(post, country_code):
+def anonymize(post):
     return {
         'link': post['thread']['link'],
         'title': post['thread']['title'],
@@ -1380,17 +1380,10 @@ def main():
             result = geocode_addr(ip_address)
             if not result:
                 continue
-            if result['metro_code']:
-                loc = result['metro_code']
-            elif result['city']:
-                loc = '%s, %s' % (result['city'].decode('latin1'), result['country_name'].decode('latin1'))
-            else:
-                loc = result['country_name']
             data = {
                 'lat': result['latitude'],
                 'lng': result['longitude'],
-                'loc': loc,
-                'post': anonymize(random.choice(messages), result['country_code']),
+                'post': anonymize(random.choice(messages)),
             }
 
             pub.send_json(data)
