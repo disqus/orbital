@@ -10,9 +10,12 @@ orbital disqus data feeder
 import gevent
 import gevent.queue
 import gevent.monkey
+
+# disqusapi does not provide first-class support for gevent (yet)
+gevent.monkey.patch_all()
+
 import disqusapi
 import os
-import pygeoip
 import traceback
 
 from gevent_zeromq import zmq
@@ -32,10 +35,6 @@ config = {
     # Your DISQUS API Access Token
     # find this at https://disqus.com/api/applications/
     'ACCESS_TOKEN': '',
-
-    # The path to your (non-free) GeoIP city data file
-    # purchase this from http://www.maxmind.com/app/city
-    'GEOIP_PATH': '/usr/share/GeoIP/GeoIPCity.dat',
 
     # The zeromq socket for the Orbital publisher server
     'SERVER': 'tcp://127.0.0.1:5556',
@@ -66,9 +65,6 @@ def log_exception(e):
         raven.captureException()
     traceback.print_exc()
 
-# disqusapi does not provide first-class support for gevent (yet)
-gevent.monkey.patch_all()
-
 # load our default settings
 load_settings('app.cfg', config, silent=False)
 
@@ -78,15 +74,6 @@ assert config['ACCESS_TOKEN'], "You must set your ACCESS_TOKEN!"
 
 
 api = disqusapi.DisqusAPI(secret_key=config['API_SECRET'])
-geocoder = pygeoip.GeoIP(config['GEOIP_PATH'], pygeoip.MEMORY_CACHE)
-
-
-def geocode_addr(addr):
-    try:
-        return geocoder.record_by_addr(addr)
-    except pygeoip.GeoIPError, e:
-        log_exception(e)
-        return {}
 
 
 def anonymize(post):
@@ -104,8 +91,8 @@ def main():
     pub.connect(config['SERVER'])
 
     def handle_post(post):
-        if 'approxyLoc' not in post:
-            print 'Post %r does not have approxyLoc field' % post['id']
+        if 'approxLoc' not in post:
+            print 'Post %r does not have approxLoc field' % post['id']
             return
 
         print "New post", post['id']
