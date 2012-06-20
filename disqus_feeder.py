@@ -91,7 +91,7 @@ def main():
     pub.connect(config['SERVER'])
 
     def handle_post(post):
-        if 'approxLoc' not in post:
+        if not post.get('approxLoc'):
             print 'Post %r does not have approxLoc field' % post['id']
             return
 
